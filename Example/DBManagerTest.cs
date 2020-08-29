@@ -14,7 +14,8 @@ namespace DBTest
     {
         const string goodProvider = "System.Data.SqlClient";
         const string badProvider = "SqlServer";
-        const string goodConnection = @"Data Source = (localdb)\MSSQLLocalDB; Initial Catalog = master; Integrated Security = True";
+        // const string goodConnection = @"Data Source = (localdb)\MSSQLLocalDB; Initial Catalog = master; Integrated Security = True";
+        const string goodConnection = @"Data Source = psicorp.the-taylor-family.org; Initial Catalog = master; Integrated Security = True";
         const string badConnection = "foo";
 
         [Fact]
