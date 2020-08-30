@@ -1,31 +1,34 @@
 # XUnitAsyncExample
-XUnit.net Async Problem Example
-
-VS2017 15.9.26  
-VS2019 16.7.2  
-XUnit.net 2.4.1  
-JustMock 2020.2.616.1  
-localdb + System.Data.SqlClient  
-ReSharper 2020.2.1  
-
+  
 **Problem description:**  
-When using localdb in Windows 10 (1909) async unit tests will fail even if the code it's testing works.  In some circumstances, as with the project here, the tests when
-run as a group all seem to work fine.  When running the async unit tests (that have database calls to Open) individually or if they execute before the non-async tests (that 
-have database calls to Open), they will throw an exception.  If the connection string is repointed to a real SQL Server instance, the problem disappears.
+When using localdb in Windows 10, async unit tests will fail even if the code it's testing works.  In some circumstances, as with the project here, the tests when run as a group all seem to work fine.  When running the async unit tests (that have database calls to Open) individually or if they execute before the non-async tests (that have database calls to Open), they will throw an exception.  If the connection string is repointed to a real SQL Server instance, the problem disappears.
 
 Here are the bits of information I have based on the testing I've done to try and isolate the issue:
 
 - When the unit tests in this project are run together, they succeed (possibly due to the non-async elements executing before the async ones run).  
 - When the async tests are run individually they cause an exception.   
 - The exception occurs when connection.Open() is called in the code under test.  
-- Non-async tests succeed regardless of how they are run.  
+- Non-async tests succeed regardless of how they are run (together or individually).  
 - Running selected async and non-async unit tests having database calls (when non-async executes before the async tests) pass.  
-- If you create, say, a console app and run the code, it works fine.  It only seems to be when executing under the test runner.  
+- If you create a console app and run the code, it works fine.  It only seems to be when executing under the test runner.  
 
 Other things that have been tried...  Installed Polly from nuget and used the Handle<Exception> and Retry with a large number of retries, still fails after exhausting the 
 retries.  Tried a suggestion from a reported NUnit problem on older Windows that suggested removing the Integrated Security = True from the connection string,
 but that didn't make any difference.  I tried it in JetBrains Rider, but I had to move over to .NET Core as Framework isn't supported in Rider.  I wasn't able to get it to fail,
 but it's not an apples-to-apples comparison.
+
+Here's the version bits...  
+Windows 10 Enterprise 1909  
+VS2017 15.9.26  
+VS2019 16.7.2  
+XUnit.net 2.4.1  
+JustMock 2020.2.616.1 (free version)  
+System.Data.SqlClient  
+localdb (13.0.4001 - equivalently 2016 SP1)  
+SQL Server 2016 SP2 CU14  
+ReSharper 2020.2.1  
+
+
 
 Stack trace when running ExecuteSelectStatementScalarAsync_Correct_Equals1() by itself:
 ```
